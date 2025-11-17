@@ -3,46 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบฟอร์มสั่งอาหาร</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>เมนูอาหาร</h1>
-        <form id="orderForm">
-            <div class="menu-item">
-                <label for="item1">เมนู1</label>
-                <select name="เมนู1" id="เมนู1">
-                    <option value="แกงกะทิ">แกงกะทิ</option>
-                <option value="ไก่ทอด">ไก่ทอด</option>
-                <option value="ข้าวสวย">ข้าวสวย</option>
-                </select>
-                </div>
-               
-            </div>
+    <title>SWKJ. canteen First page</title>
+    
+    <link rel="stylesheet" href="style(2).css"> 
+    
+    <style>
+        /* ---------------------------------------------------- */
+        /* CSS จัดการโครงสร้างหน้าและปุ่ม */
+        /* ---------------------------------------------------- */
+        body {
+            /* พื้นหลังสี */
+            background-color: tan; 
+            
+            /* Flexbox สำหรับจัดปุ่มกลางจอ */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0; 
+            /* จัดองค์ประกอบย่อย (หัวข้อและปุ่ม) เรียงกันในแนวตั้ง */
+            flex-direction: column; 
+            
+            /* ตั้งค่าฟอนต์พื้นฐาน (คุณสามารถเพิ่มฟอนต์ไทยได้ที่นี่) */
+            font-family: Arial, sans-serif; 
+        }
 
-            <!--<div class="total">
-                <p>รวมราคา: <span id="totalPrice"></span> บาท</p>
-            </div>
-        -->
-            <p>
-            <h2>ข้อมูลจัดส่ง</h2>
-            <label for="name">ชื่อ:</label>
-            <input type="text" id="name" name="name" required>
-</p>
-<p>
-            <label for="address">ข้อมูลเพิ่มเติม:</label>
-            <textarea id="address" name="address" rows="4" required></textarea>
-</p>
-<br>
-<p>
-            <label for="phone">เบอร์โทรศัพท์:</label>
-            <input type="tel" id="phone" name="phone" required>
-</p>
-            <button type="submit">ส่งคำสั่งซื้อ</button>
-        </form>
-        <link rel="stylesheet" href="style.css">
+        /* สไตล์ของข้อความหัวเรื่อง */
+        .header-content {
+            text-align: center;
+            margin-bottom: 20px; 
+        }
+
+        /* สไตล์ของปุ่ม <a> */
+        .button-link {
+            display: inline-block; 
+            padding: 15px 30px;
+            background-color: #000000; /* สีดำ */
+            color: rgb(255, 255, 255);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin: 5px; /* เพิ่มระยะห่างระหว่างปุ่ม */
+        }
+        
+        .button-link:hover {
+            background-color: #1cc2ff; /* สีฟ้าอ่อนเมื่อเมาส์ชี้ */
+        }
+
+        /* จัดสีหัวข้อตามโค้ดเดิม */
+        .header-content h1 {
+            color: rgb(237, 0, 0); /* สีแดง */
+        }
+
+        .header-content h2 {
+            color: rgb(4, 0, 255); /* สีน้ำเงิน */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-content">
+        <h1>SWKJ. Canteen</h1>
+        <h2>กรุณาเลือกไปต่อ</h2>
     </div>
-    <script src="script.js"></script>
+
+    <a href="consume.html" class="button-link">หน้าถัดไป</a>
+    <a href="log in.html" class="button-link">เข้าสู่ระบบ</a>
+    <a href="sign in.html" class="button-link">ลงชื่อเข้าใช้</a>
+    
 </body>
 </html>
