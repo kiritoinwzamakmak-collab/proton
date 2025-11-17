@@ -1,0 +1,19 @@
+.center-horizontal {
+    /* 1. จัดองค์ประกอบ Inline ที่อยู่ภายในให้อยู่กึ่งกลาง */
+    text-align: center; 
+    /* 2. กำหนดให้ div มีความกว้างเต็มที่ */
+    width: 100%; 
+    /* *ตัวเลือกเสริม: หากต้องการให้ปุ่มอยู่กลางหน้าจอจริงๆ */
+    /* margin-top: 50px; */ 
+}
+
+/* สไตล์ของลิงก์ */
+.button-link {
+    /* ต้องกำหนดเป็น inline-block หรือ block */
+    display: inline-block; 
+    padding: 15px 30px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+}

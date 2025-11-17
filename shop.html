@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าสินค้า</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 1000px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+            }
+        }
+
+        .product-image {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .product-details {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .product-details h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .product-details .price {
+            font-size: 2em;
+            color: #007bff;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .product-details .description {
+            font-size: 1em;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .quantity-selector button {
+            background-color: #eee;
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .quantity-selector button:hover {
+            background-color: #ddd;
+        }
+
+        .quantity-selector input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 8px;
+            margin: 0 10px;
+            font-size: 1em;
+            border-radius: 4px;
+        }
+        
+        .add-to-cart-btn {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="product-image">
+            <img src="https://via.placeholder.com/500" alt="ชื่อสินค้า">
+        </div>
+        <div class="product-details">
+            <h1>ชื่อสินค้าตัวอย่างที่ยอดเยี่ยม</h1>
+            <div class="price">฿999.00</div>
+            <div class="description">
+                <p>คำอธิบายสินค้า: สินค้าชิ้นนี้ถูกออกแบบมาอย่างพิถีพิถันด้วยวัสดุคุณภาพสูง ทนทาน และใช้งานได้หลากหลาย โดดเด่นด้วยดีไซน์ที่ทันสมัย เหมาะสำหรับทุกไลฟ์สไตล์</p>
+                <ul>
+                    <li>คุณสมบัติที่ 1</li>
+                    <li>คุณสมบัติที่ 2</li>
+                    <li>คุณสมบัติที่ 3</li>
+                </ul>
+            </div>
+            <div class="quantity-selector">
+                <button id="decrease-btn">-</button>
+                <input type="text" id="quantity-input" value="1" readonly>
+                <button id="increase-btn">+</button>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart()">เพิ่มลงในตะกร้า</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const decreaseBtn = document.getElementById('decrease-btn');
+            const increaseBtn = document.getElementById('increase-btn');
+            const quantityInput = document.getElementById('quantity-input');
+
+            decreaseBtn.addEventListener('click', function() {
+                let currentValue = parseInt(quantityInput.value);
+                if (currentValue > 1) {
+                    quantityInput.value = currentValue - 1;
+                }
+            });
+
+            increaseBtn.addEventListener('click', function() {
+                let currentValue = parseInt(quantityInput.value);
+                quantityInput.value = currentValue + 1;
+            });
+        });
+
+        function addToCart() {
+            const quantity = document.getElementById('quantity-input').value;
+            alert('เพิ่มสินค้า ' + quantity + ' ชิ้นลงในตะกร้า');
+        }
+    </script>
+
+</body>
+</html>

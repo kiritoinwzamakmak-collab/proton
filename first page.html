@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<body>
+
+        <!-- หัวข้อใช้hเลข -->
+
+    <div class="wrapper">
+
+        <div style="text-align: center;">
+
+        </div>
+
+<body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWKJ. canteen First page</title>
+    <style>
+
+/* ส่วนของ CSS ที่ใช้จัดปุ่ม */
+        body {
+            /* ❗ เพิ่มโค้ดพื้นหลังสีแทนตรงนี้ ❗ */
+            background-color: tan; 
+
+            /* โค้ด Flexbox สำหรับจัดปุ่มกลางจอ (จากคำตอบก่อนหน้า) */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0; 
+            flex-direction: column;
+        }
+
+        /* ... สไตล์อื่นๆ ของ .header-content และ .button-link ยังคงเดิม ... */
+        .header-content {
+            text-align: center;
+            margin-bottom: 20px; 
+        }
+
+        .button-link {
+            display: inline-block; 
+            padding: 15px 30px;
+            background-color: #007bff; 
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .button-link:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+    <style>
+        /* CSS สำหรับจัดองค์ประกอบให้อยู่กึ่งกลางหน้าจอ */
+        body {
+            /* 1. เปิดใช้งาน Flexbox */
+            display: flex;
+            /* 2. จัดให้อยู่กึ่งกลางแนวนอน (ซ้าย-ขวา) */
+            justify-content: center;
+            /* 3. จัดให้อยู่กึ่งกลางแนวตั้ง (บน-ล่าง) */
+            align-items: center;
+            
+            /* 4. กำหนดความสูงของ body ให้เต็มหน้าจอ */
+            min-height: 100vh;
+            
+            /* 5. ลบระยะขอบพื้นฐาน (สำคัญมาก) */
+            margin: 0; 
+            
+            /* จัดข้อความส่วนหัวให้อยู่ข้างบน */
+            flex-direction: column;
+        }
+
+        /* สไตล์ของข้อความหัวเรื่อง */
+        .header-content {
+            /* ใช้ text-align เพื่อจัดข้อความที่อยู่ภายใน */
+            text-align: center;
+            /* ใส่ margin เพื่อให้หัวข้ออยู่เหนือปุ่มเล็กน้อย */
+            margin-bottom: 20px; 
+        }
+
+        /* สไตล์ของปุ่ม <a> */
+        .button-link {
+            /* ทำให้ลิงก์มีรูปร่างเหมือนปุ่ม */
+            display: inline-block; 
+            padding: 15px 30px;
+            background-color: #000000; /* สีน้ำเงิน */
+            color: rgb(255, 255, 255);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .button-link:hover {
+            background-color: #1cc2ff;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="header-content">
+        <h1 style="color: rgb(237, 0, 0);">SWKJ. Canteen</h1>
+        <h2 style="color: rgb(4, 0, 255);">กรุณาเลือกไปต่อ</h2>
+    </div>
+
+    <a href="consume.html" class="button-link">หน้าถัดไป</a>
+    <a href="log in.html" class="button-link">เข้าสู่ระบบ</a>
+    <a href="sign in.html" class="button-link">ลงชื่อเข้าใช้</a>
+    
+    </body>
+     <link rel="stylesheet" href="style(2).css">
+</html>

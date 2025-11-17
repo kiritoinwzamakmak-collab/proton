@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบฟอร์มสั่งอาหาร</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>เมนูอาหาร</h1>
+        <form id="orderForm">
+            <div class="menu-item">
+                <label for="item1">เมนู1</label>
+                <select name="เมนู1" id="เมนู1">
+                    <option value="แกงกะทิ">แกงกะทิ</option>
+                <option value="ไก่ทอด">ไก่ทอด</option>
+                <option value="ข้าวสวย">ข้าวสวย</option>
+                </select>
+                </div>
+               
+            </div>
+
+            <!--<div class="total">
+                <p>รวมราคา: <span id="totalPrice"></span> บาท</p>
+            </div>
+        -->
+            <p>
+            <h2>ข้อมูลจัดส่ง</h2>
+            <label for="name">ชื่อ:</label>
+            <input type="text" id="name" name="name" required>
+</p>
+<p>
+            <label for="address">ข้อมูลเพิ่มเติม:</label>
+            <textarea id="address" name="address" rows="4" required></textarea>
+</p>
+<br>
+<p>
+            <label for="phone">เบอร์โทรศัพท์:</label>
+            <input type="tel" id="phone" name="phone" required>
+</p>
+            <button type="submit">ส่งคำสั่งซื้อ</button>
+        </form>
+        <link rel="stylesheet" href="style.css">
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
