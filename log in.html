@@ -1,3 +1,59 @@
+<?php
+session_start();
+// ตรวจสอบว่าผู้ใช้เข้าสู่ระบบอยู่แล้วหรือไม่ หากใช่ให้ส่งไปยังหน้าหลัก
+if (isset($_SESSION['user_id'])) {
+    header("Location: dashboard.php"); // เปลี่ยนเป็นหน้าหลักของคุณ เช่น index.html หรือ shop.html
+    exit;
+}
+
+// ข้อมูลการเชื่อมต่อฐานข้อมูล (กรุณาเปลี่ยนค่าให้ถูกต้อง)
+$servername = "localhost";
+$db_username = "root";
+$db_password = "";
+$dbname = "my_auth_db";
+$login_error = ""; // ตัวแปรสำหรับเก็บข้อความแจ้งเตือน
+
+// เชื่อมต่อฐานข้อมูล
+$conn = new mysqli($servername, $db_username, $db_password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username_or_email = $_POST['username']; // รับค่าจากฟอร์ม (ใช้ input name="username")
+    $password = $_POST['password'];
+
+    // 1. เตรียมคำสั่ง SQL เพื่อดึงข้อมูลผู้ใช้ (ตรวจสอบโดยใช้ username หรือ email)
+    // สำหรับโค้ดนี้ เราจะใช้ field 'username' ในการตรวจสอบ
+    $stmt = $conn->prepare("SELECT id, password_hash FROM users WHERE username = ? OR email = ?");
+    $stmt->bind_param("ss", $username_or_email, $username_or_email); // ตรวจสอบจากทั้ง username และ email
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+        $password_hash = $user['password_hash'];
+
+        // 2. ตรวจสอบรหัสผ่านที่เข้ารหัสแล้ว
+        if (password_verify($password, $password_hash)) {
+            // รหัสผ่านถูกต้อง สร้าง Session
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $username_or_email; // ใช้ค่าที่ส่งมาเป็น username ใน session
+            header("Location: shop.html"); // *** เปลี่ยนเส้นทางไปยังหน้าหลัก/ร้านค้าเมื่อเข้าสู่ระบบสำเร็จ ***
+            exit;
+        } else {
+            $login_error = "รหัสผ่านไม่ถูกต้อง";
+        }
+    } else {
+        $login_error = "ไม่พบชื่อผู้ใช้หรืออีเมลนี้";
+    }
+
+    $stmt->close();
+}
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -65,7 +121,13 @@
         }
 
         button:hover {
-            background-color: #ff9500;
+            background-color: #cc7800; /* เปลี่ยนสีให้แตกต่างเมื่อ Hover */
+        }
+        
+        .error {
+            color: red;
+            margin-bottom: 15px;
+            font-weight: bold;
         }
 
         .forgot-password {
@@ -86,32 +148,39 @@
 <body>
     <div class="container">
         <h2>เข้าสู่ระบบ</h2>
-        <form action="#" method="POST">
+
+        <?php 
+        // แสดงข้อความแจ้งเตือน (ถ้ามีข้อผิดพลาด)
+        if (!empty($login_error)) {
+            echo '<div class="error">' . $login_error . '</div>';
+        }
+        ?>
+
+        <form action="login.php" method="POST">
             <div class="form-group">
-                <label for="username">ชื่อผู้ใช้</label>
-                <input type="text" id="username" name="username" required>
+                <label for="username">ชื่อผู้ใช้ หรือ Email</label>
+                <input type="text" id="username" name="username" required> 
             </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="text" id="email" name="email" required>
-            </div>
+            
             <div class="form-group">
                 <label for="password">รหัสผ่าน</label>
                 <input type="password" id="password" name="password" required>
             </div>
         
-             <a href="shop.html"><button type="submit" href="shop.html">เข้าสู่ระบบ </button> </a>
+            <button type="submit">เข้าสู่ระบบ</button>
 
-        
         </form>
+        
         <div class="forgot-password">
             <a href="#">ลืมรหัสผ่าน?</a>
         </div>
-        <h3><p style="color: aquamarine;">____________</p></h3>
-        <div class="do not sign in">
-            <a href="sign in.html">ยังไม่ได้สมัครบัญชี</a>
+        
+        <h3><p style="color: #666;">____________</p></h3> 
+
+        <div class="do-not-sign-in">
+            <a href="signup.php">ยังไม่ได้สมัครบัญชี</a>
         </div>
-            <link rel="stylesheet" href="stylee.css">
-    </div>
+        
+        </div>
 </body>
 </html>
