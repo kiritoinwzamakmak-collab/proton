@@ -1,173 +1,98 @@
+<?php
+include 'db_connect.php';
+include 'send_email_mock.php';
+
+$error_message = "";
+$success_redirect = false;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $conn->real_escape_string($_POST['name']);
+    $email = $conn->real_escape_string($_POST['email']);
+    $phone = $conn->real_escape_string($_POST['phone']);
+    $menu_items = $conn->real_escape_string(implode(", ", $_POST['menu'])); // รวมเมนูเป็น String
+
+    if (empty($name) || empty($email) || empty($_POST['menu'])) {
+        $error_message = "กรุณากรอกชื่อ Email และเลือกเมนูอาหาร";
+    } else {
+        // 1. คำนวณเลขคิวใหม่ (โดยนับจำนวนคำสั่งซื้อที่มีอยู่ทั้งหมด)
+        $result = $conn->query("SELECT MAX(queue_number) AS max_queue FROM orders");
+        $row = $result->fetch_assoc();
+        $new_queue = ($row['max_queue'] ?? 0) + 1;
+
+        // 2. บันทึกคำสั่งซื้อลงฐานข้อมูล
+        $stmt = $conn->prepare("INSERT INTO orders (customer_name, customer_email, customer_phone, menu_items, queue_number, order_status) VALUES (?, ?, ?, ?, ?, 'Pending')");
+        $stmt->bind_param("ssssi", $name, $email, $phone, $menu_items, $new_queue);
+
+        if ($stmt->execute()) {
+            $last_id = $stmt->insert_id;
+            $stmt->close();
+            
+            // 3. จำลองการส่งอีเมลยืนยัน
+            $send_status = send_order_confirmation_email($email, $name, $new_queue, $menu_items, 'Pending');
+            
+            // 4. ส่งผู้ใช้ไปยังหน้าสรุปคำสั่งซื้อ
+            header("Location: order_complete.php?order_id=" . $last_id);
+            exit;
+        } else {
+            $error_message = "เกิดข้อผิดพลาดในการบันทึกคำสั่งซื้อ: " . $conn->error;
+        }
+    }
+}
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้าสินค้า</title>
+    <title>ระบบสั่งอาหาร</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            width: 90%;
-            max-width: 1000px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                flex-direction: row;
-            }
-        }
-
-        .product-image {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .product-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .product-details {
-            flex: 1;
-            padding: 30px;
-        }
-
-        .product-details h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .product-details .price {
-            font-size: 2em;
-            color: #007bff;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .product-details .description {
-            font-size: 1em;
-            line-height: 1.6;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .quantity-selector button {
-            background-color: #eee;
-            border: 1px solid #ccc;
-            padding: 8px 12px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .quantity-selector button:hover {
-            background-color: #ddd;
-        }
-
-        .quantity-selector input {
-            width: 50px;
-            text-align: center;
-            border: 1px solid #ccc;
-            padding: 8px;
-            margin: 0 10px;
-            font-size: 1em;
-            border-radius: 4px;
-        }
-        
-        .add-to-cart-btn {
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            padding: 15px 25px;
-            font-size: 1.2em;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-            width: 100%;
-        }
-
-        .add-to-cart-btn:hover {
-            background-color: #218838;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="email"], input[type="tel"], textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .menu-options label { display: inline-block; margin-right: 15px; font-weight: normal; }
+        button { background-color: #ff9500; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; }
+        .error { color: red; text-align: center; margin-bottom: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <div class="product-image">
-            <img src="https://via.placeholder.com/500" alt="ชื่อสินค้า">
-        </div>
-        <div class="product-details">
-            <h1>ชื่อสินค้าตัวอย่างที่ยอดเยี่ยม</h1>
-            <div class="price">฿999.00</div>
-            <div class="description">
-                <p>คำอธิบายสินค้า: สินค้าชิ้นนี้ถูกออกแบบมาอย่างพิถีพิถันด้วยวัสดุคุณภาพสูง ทนทาน และใช้งานได้หลากหลาย โดดเด่นด้วยดีไซน์ที่ทันสมัย เหมาะสำหรับทุกไลฟ์สไตล์</p>
-                <ul>
-                    <li>คุณสมบัติที่ 1</li>
-                    <li>คุณสมบัติที่ 2</li>
-                    <li>คุณสมบัติที่ 3</li>
-                </ul>
+        <h2>🍔 สั่งอาหาร</h2>
+        <?php if ($error_message): ?>
+            <div class="error"><?php echo $error_message; ?></div>
+        <?php endif; ?>
+        
+        <form action="order.php" method="POST">
+            <div class="form-group">
+                <label for="name">ชื่อผู้สั่ง:</label>
+                <input type="text" id="name" name="name" required>
             </div>
-            <div class="quantity-selector">
-                <button id="decrease-btn">-</button>
-                <input type="text" id="quantity-input" value="1" readonly>
-                <button id="increase-btn">+</button>
+            
+            <div class="form-group">
+                <label for="email">Email สำหรับรับข้อมูลคิว:</label>
+                <input type="email" id="email" name="email" required>
             </div>
-            <button class="add-to-cart-btn" onclick="addToCart()">เพิ่มลงในตะกร้า</button>
-        </div>
+            
+            <div class="form-group">
+                <label for="phone">เบอร์โทรศัพท์ (ไม่บังคับ):</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+            
+            <div class="form-group">
+                <label>เมนูอาหารที่ต้องการสั่ง:</label>
+                <div class="menu-options">
+                    <label><input type="checkbox" name="menu[]" value="ข้าวผัดกะเพรา"> ข้าวผัดกะเพรา</label><br>
+                    <label><input type="checkbox" name="menu[]" value="ราดหน้า"> ราดหน้า</label><br>
+                    <label><input type="checkbox" name="menu[]" value="ผัดไทย"> ผัดไทย</label><br>
+                    <label><input type="checkbox" name="menu[]" value="ชาเย็น"> ชาเย็น</label><br>
+                </div>
+            </div>
+            
+            <button type="submit">ยืนยันคำสั่งซื้อ</button>
+        </form>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const decreaseBtn = document.getElementById('decrease-btn');
-            const increaseBtn = document.getElementById('increase-btn');
-            const quantityInput = document.getElementById('quantity-input');
-
-            decreaseBtn.addEventListener('click', function() {
-                let currentValue = parseInt(quantityInput.value);
-                if (currentValue > 1) {
-                    quantityInput.value = currentValue - 1;
-                }
-            });
-
-            increaseBtn.addEventListener('click', function() {
-                let currentValue = parseInt(quantityInput.value);
-                quantityInput.value = currentValue + 1;
-            });
-        });
-
-        function addToCart() {
-            const quantity = document.getElementById('quantity-input').value;
-            alert('เพิ่มสินค้า ' + quantity + ' ชิ้นลงในตะกร้า');
-        }
-    </script>
-
 </body>
 </html>
